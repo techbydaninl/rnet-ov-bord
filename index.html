@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R-Net OV Bordbouwer</title>
+<style>
+:root{--red:#d71920;--ink:#101828;--paper:#f6f7f9;--line:#d9dee7;--muted:#667085;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
+header{display:flex;justify-content:space-between;align-items:center;gap:14px;background:white;border-bottom:1px solid var(--line);padding:15px max(16px,calc((100% - 1240px)/2));position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:11px}.logo{background:var(--red);color:white;padding:8px 11px;border-radius:7px;font-weight:950;font-size:19px;letter-spacing:-1px}.brand h1{font-size:17px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+button,.button{font:inherit;font-weight:700;border:0;border-radius:8px;padding:10px 13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}.primary{background:var(--red);color:#fff}.secondary{background:#edf0f4;color:#182230}.danger{background:#fff0f0;color:#b42318}.wrap{max-width:1240px;margin:22px auto;padding:0 16px}.editor{display:grid;grid-template-columns:320px minmax(0,1fr);gap:18px}.panel{background:#fff;border:1px solid var(--line);border-radius:13px;padding:17px;box-shadow:0 5px 18px #10182808;min-width:0}.panel h2{font-size:16px;margin:0 0 13px}.section{margin:19px 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);font-weight:800}
+label{display:block;font-size:12px;font-weight:750;margin:11px 0 5px}input,select{width:100%;font:inherit;border:1px solid #cbd2dc;border-radius:8px;background:#fff;padding:10px;color:var(--ink)}input[type=color]{height:40px;padding:3px}input[type=checkbox]{width:auto}small,.hint{font-size:12px;color:var(--muted);line-height:1.5}.hint{margin:9px 0}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.saved-list{display:flex;flex-direction:column;gap:6px}.saved-row{display:flex;gap:5px}.saved-row button:first-child{flex:1;justify-content:flex-start;text-align:left;background:#f7f8fa;border:1px solid var(--line)}.saved-row button.selected{background:#fff0f0;border-color:var(--red);color:#a41218}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.topline h2{font-size:17px;margin:0}.pill{font-size:11px;font-weight:800;padding:5px 9px;border-radius:99px;background:#fff1d6;color:#8a4b08}.pill.ok{background:#dcfce7;color:#166534}.board{border:1px solid #cbd2dc;border-radius:13px;overflow:hidden;box-shadow:0 12px 30px #10182812;background:white}
+.boardhead{background:var(--board-red,var(--red));color:#fff;padding:20px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px}.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:10px;opacity:.86;font-weight:750}.boardhead h2{margin:4px 0 0;font-size:clamp(23px,3vw,34px);line-height:1.15}.badge{border:2px solid white;border-radius:999px;padding:7px 10px;font-weight:900;white-space:nowrap}
+.boardmeta{display:flex;justify-content:space-between;gap:10px;background:#fff;color:#475467;padding:10px 20px;font-size:11px;border-bottom:1px solid var(--line)}
+.dep{display:grid;grid-template-columns:82px minmax(0,1fr) 82px;gap:10px;align-items:center;padding:14px 18px;border-bottom:1px solid #e4e7ec;background:#fff;color:#101828}.dep:last-child{border-bottom:0}.time{font-weight:900;font-size:25px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.line{display:inline-block;min-width:39px;text-align:center;background:#101828;color:white;padding:3px 7px;border-radius:5px;font-weight:900;font-size:13px;margin-right:7px}.destination{font-weight:800}.sub{font-size:11px;color:#667085;margin-top:4px}.when{text-align:right;color:var(--board-red,var(--red));font-size:12px;font-weight:850}.when small{display:block;font-weight:500}.board-status{padding:11px 18px;background:#fff8e8;border-top:1px solid #f7dca2;color:#7a4b00;font-size:11px}.board.dark .dep{background:#141d2b;color:#f8fafc;border-color:#303c4d}.board.dark .sub{color:#c1cad7}.board.dark .boardmeta{background:#0f1724;color:#c1cad7}.board.dark .board-status{background:#2b2414;color:#f6d99a;border-color:#4e401e}.board.light .boardhead{background:#fff;color:var(--board-red);border-bottom:4px solid var(--board-red)}.board.light .badge{border-color:var(--board-red)}
+.empty{padding:30px;text-align:center;color:var(--muted);background:white}.boards-view{display:none}.public-note{margin-top:12px;color:var(--muted);font-size:11px}.hide{display:none!important}.searchrow{display:flex;gap:7px}.searchrow input{min-width:0}.searchrow button{white-space:nowrap}.results{display:flex;flex-direction:column;gap:6px;margin-top:8px}.result{display:flex;flex-direction:column;text-align:left;align-items:flex-start;background:#f7f8fa;border:1px solid var(--line);font-size:12px}.result span{color:var(--muted);font-weight:500}.footer{text-align:center;color:var(--muted);font-size:11px;padding:22px}
+@media(max-width:850px){header{position:static}.editor{grid-template-columns:1fr}.dep{grid-template-columns:65px minmax(0,1fr) 65px;padding:12px 10px;gap:7px}.time{font-size:21px}.boardhead{padding:16px}.boardmeta{padding:9px 12px}.wrap{margin-top:14px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">R·NET</div><div><h1>OV Bordbouwer</h1><p>Haltes, vertrekborden en eigen vormgeving</p></div></div><button class="secondary" id="export">Exporteer back-up</button></header>
+<div class="wrap">
+<section id="admin" class="editor">
+<aside class="panel">
+<h2>Mijn vertrekborden</h2><div class="saved-list" id="savedList"></div>
+<div class="actions"><button class="primary" id="newBoard">＋ Nieuw bord</button><button class="danger" id="deleteBoard">Verwijderen</button></div>
+<div class="section">Halte zoeken</div>
+<label for="proxy">HTTPS API-proxy URL</label><input id="proxy" placeholder="https://jouw-worker.workers.dev">
+<p class="hint">Eenmalig instellen na de Cloudflare Worker-installatie. Deze URL wordt lokaal opgeslagen.</p>
+<label for="search">Zoek halte op naam</label><div class="searchrow"><input id="search" placeholder="Bijv. Bornholm Hoofddorp"><button class="secondary" id="searchBtn">Zoek</button></div><div class="results" id="searchResults"></div>
+<label for="code">Timingpoint-code</label><input id="code" placeholder="Bijv. 30005071">
+<p class="hint">Kies een gevonden halte om de juiste code over te nemen. Haltecodes uit andere websites zijn niet altijd OVapi-codes.</p>
+<div class="section">Inhoud</div>
+<label for="name">Naam in je beheer</label><input id="name" placeholder="Bornholm">
+<label for="stopName">Titel op vertrekbord</label><input id="stopName" placeholder="Bornholm, Hoofddorp">
+<label for="rows">Aantal regels</label><select id="rows"><option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option><option>8</option><option>10</option><option>12</option></select>
+<label for="refresh">Automatisch verversen</label><select id="refresh"><option value="30">Elke 30 seconden</option><option value="60">Elke minuut</option><option value="120">Elke 2 minuten</option><option value="0">Uit</option></select>
+<div class="section">Vormgeving</div>
+<label for="style">Layout</label><select id="style"><option value="rnet">R-Net klassiek</option><option value="dark">Donker digitaal</option><option value="light">Licht minimalistisch</option></select>
+<label for="red">Accentkleur</label><input type="color" id="red" value="#d71920">
+<label for="background">Achtergrond vertrekregels</label><input type="color" id="background" value="#ffffff">
+<label for="text">Tekstkleur</label><input type="color" id="text" value="#101828">
+<label for="showVia">Toon extra ritinformatie</label><select id="showVia"><option value="yes">Ja</option><option value="no">Nee</option></select>
+<div class="actions"><button class="primary" id="save">Instellingen opslaan</button><button class="secondary" id="test">Ververs live data</button></div>
+<div class="section">Openbaar delen</div><p class="hint">Maak een publieke kijklink. Die link bevat de gekozen bordinstellingen; je bezoeker ziet alleen het bord.</p>
+<button class="primary" id="share">Maak openbare bordlink</button><input id="shareUrl" readonly placeholder="Je openbare link verschijnt hier">
+<div class="actions"><button class="secondary" id="copyShare">Kopieer link</button></div>
+<p class="hint">Instellingen worden lokaal in deze browser bewaard. Exporteer een back-up als je ze wilt bewaren of verplaatsen.</p>
+</aside>
+<main>
+<div class="topline"><h2>Live voorbeeld</h2><span id="statusPill" class="pill">Live data niet getest</span></div>
+<div id="board" class="board"><div class="boardhead"><div><div class="eyebrow">Vertrektijden</div><h2 id="displayName">Bornholm, Hoofddorp</h2></div><div class="badge">R·NET</div></div><div class="boardmeta"><span id="metaLeft">Actuele vertrektijden indien beschikbaar</span><span id="metaRight">Nog niet bijgewerkt</span></div><div id="departures"><div class="empty">Stel een halte in en klik op ‘Ververs live data’.</div></div><div class="board-status" id="message">Live data wordt pas getoond als een geldige proxy en haltecode zijn ingesteld.</div></div>
+<div class="public-note">Prototype voor eigen gebruik. Geen officiële R-Net-, vervoerders- of JouwWeb-dienst.</div>
+</main>
+</section>
+<section id="viewer" class="boards-view"><div class="topline"><h2 id="viewHeading">Vertrektijden</h2><span class="pill" id="viewStatus">Laden</span></div><div id="publicBoard" class="board"></div><p class="public-note">Onafhankelijk informatiebord. Controleer bij twijfel de officiële reisinformatie van de vervoerder.</p></section>
+</div>
+<div class="footer">R-Net OV Bordbouwer · open OV-data via OVapi · gebruik op eigen verantwoordelijkheid</div>
+<script>
+const $=id=>document.getElementById(id);
+const defaultBoard=()=>({id:crypto.randomUUID(),name:"Bornholm",stopName:"Bornholm, Hoofddorp",code:"",rows:5,refresh:30,style:"rnet",red:"#d71920",background:"#ffffff",text:"#101828",showVia:"yes"});
+let boards=readBoards(), selected=boards[0].id, proxy=localStorage.getItem("rnet-ov-proxy")||"", timer=null;
+function readBoards(){try{let x=JSON.parse(localStorage.getItem("rnet-ov-boards"));return Array.isArray(x)&&x.length?x:[defaultBoard()]}catch{return [defaultBoard()]}}
+function cur(){return boards.find(x=>x.id===selected)||boards[0]}
+function persist(){localStorage.setItem("rnet-ov-boards",JSON.stringify(boards));localStorage.setItem("rnet-ov-proxy",proxy)}
+const fields={name:"name",stopName:"stopName",code:"code",rows:"rows",refresh:"refresh",style:"style",red:"red",background:"background",text:"text",showVia:"showVia"};
+function takeForm(){let b=cur();for(let id in fields){let v=$(id).value;b[fields[id]]=["rows","refresh"].includes(id)?Number(v):v}proxy=$("proxy").value.trim();applyStyle()}
+function loadForm(){let b=cur();for(let id in fields)$(id).value=b[fields[id]]??defaultBoard()[fields[id]];$("proxy").value=proxy;renderList();applyStyle();$("displayName").textContent=b.stopName||b.name;renderEmpty("Klik op ‘Ververs live data’ om actuele gegevens op te halen.")}
+function renderList(){$("savedList").innerHTML="";boards.forEach(b=>{let row=document.createElement("div");row.className="saved-row";let btn=document.createElement("button");btn.textContent=b.name||"Naamloos bord";btn.className=b.id===selected?"selected":"";btn.onclick=()=>{takeForm();persist();selected=b.id;loadForm()};row.append(btn);$("savedList").append(row)})}
+function applyStyle(){let b=cur(), board=$("board");board.className="board"+(b.style==="dark"?" dark":b.style==="light"?" light":"");board.style.setProperty("--board-red",b.red);board.style.background=b.style==="dark"?"#101827":b.background;board.style.color=b.text;$("displayName").textContent=b.stopName||b.name;$("metaLeft").textContent=b.code?"Haltecode "+b.code:"Haltecode nog niet ingesteld"}
+function renderEmpty(msg){$("departures").innerHTML='<div class="empty"></div>';$("departures").firstChild.textContent=msg;$("message").textContent=msg}
+function proxyUrl(path){return proxy.replace(/\/+$/,"")+path}
+function parseTime(x){if(!x)return null;let d=new Date(x);return isNaN(d)?null:d}
+function getTime(p){return parseTime(p.ExpectedDepartureTime||p.ExpectedArrivalTime||p.TargetDepartureTime||p.TargetArrivalTime)}
+function renderPasses(passList, target, publicMode=false){let b=target, board=publicMode?$("publicBoard"):$("board"), dep=publicMode?board.querySelector(".pub-departures"):$("departures"), msg=publicMode?board.querySelector(".pub-message"):$("message"), pill=publicMode?$("viewStatus"):$("statusPill"), meta=publicMode?board.querySelector(".pub-meta-right"):$("metaRight");
+dep.innerHTML="";let now=new Date();let list=passList.map(p=>({...p,_time:getTime(p)})).filter(p=>p._time&&p._time.getTime()>now.getTime()-60000).sort((a,b)=>a._time-b._time).slice(0,Number(b.rows)||5);
+if(!list.length){renderNoDepartures(dep,msg);pill.textContent="Geen ritten";pill.className="pill";return}
+list.forEach(p=>{let minutes=Math.max(0,Math.round((p._time-now)/60000));let time=p._time.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});let line=p.LinePublicNumber||p.LinePlanningNumber||p.LineName||"?";let dest=p.DestinationName50||p.DestinationName||p.DestinationCode||"Bestemming onbekend";let via=p.TransportType||p.OperatorCode||"";let el=document.createElement("div");el.className="dep";el.style.background=b.style==="dark"?"#141d2b":b.background;el.style.color=b.text;let middle=`<div><span class="line">${esc(line)}</span><span class="destination">${esc(dest)}</span>${b.showVia!=="no"&&via?`<div class="sub">${esc(via)}</div>`:""}</div>`;el.innerHTML=`<div class="time">${time}</div>${middle}<div class="when">${minutes===0?"Nu":minutes+" min"}<small>${minutes===0?"verwacht":"tot vertrek"}</small></div>`;dep.append(el)});
+pill.textContent="Live data";pill.className="pill ok";meta.textContent="Bijgewerkt "+now.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",second:"2-digit"});msg.textContent="Vertrektijden opgehaald via OVapi. Tijden kunnen wijzigen; controleer bij twijfel de vervoerder."
+}
+function renderNoDepartures(dep,msg){dep.innerHTML='<div class="empty">Geen toekomstige vertrektijden gevonden voor deze halte.</div>';msg.textContent="De gegevensbron reageerde, maar leverde geen bruikbare toekomstige vertrektijden op."}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function findPasses(json,code){let root=json?.[code]||Object.values(json||{})[0]||json;return {stop:root?.Stop||{},passes:Object.values(root?.Passes||{})}}
+async function getLive(target,publicMode=false){let b=target, code=String(b.code||"").trim(), url=publicMode?b.proxy:proxy;if(!url||!/^https:\/\//i.test(url)){if(!publicMode)renderEmpty("Vul eerst de HTTPS Worker-URL in. De OVapi-bron zelf gebruikt HTTP en kan niet veilig rechtstreeks vanuit deze pagina worden aangeroepen.");else $("viewStatus").textContent="Proxy niet ingesteld";return}
+if(!code){if(!publicMode)renderEmpty("Vul een timingpoint-code in of zoek de halte hierboven.");else $("viewStatus").textContent="Geen haltecode";return}
+let pill=publicMode?$("viewStatus"):$("statusPill");pill.textContent="Ophalen…";
+try{let res=await fetch(url.replace(/\/+$/,"")+"/tpc/"+encodeURIComponent(code),{headers:{"Accept":"application/json"}});if(!res.ok)throw new Error("Proxy reageerde met HTTP "+res.status);let json=await res.json(), parsed=findPasses(json,code);if(parsed.stop?.TimingPointName&&!publicMode&&!b.stopName)$("stopName").value=parsed.stop.TimingPointName;
+if(publicMode){let board=$("publicBoard");renderPasses(parsed.passes,b,true)}else{renderPasses(parsed.passes,b,false);if(parsed.stop?.TimingPointName&&(!b.stopName||b.stopName==="Bornholm, Hoofddorp")){b.stopName=parsed.stop.TimingPointName;$("stopName").value=b.stopName;$("displayName").textContent=b.stopName}}
+}catch(e){pill.textContent="Geen verbinding";pill.className="pill";if(publicMode){$("viewStatus").textContent="Data niet beschikbaar";let m=$("publicBoard").querySelector(".pub-message");if(m)m.textContent="Live gegevens zijn tijdelijk niet beschikbaar. Probeer later opnieuw."}else renderEmpty("Live gegevens konden niet worden opgehaald: "+e.message+". Controleer de Worker-URL, haltecode en Worker-instellingen.")}}
+async function searchStops(){takeForm();persist();let q=$("search").value.trim();$("searchResults").innerHTML="";if(!proxy){$("searchResults").textContent="Vul eerst de HTTPS Worker-URL in.";return}if(q.length<2){$("searchResults").textContent="Typ minimaal 2 tekens.";return}let btn=$("searchBtn");btn.disabled=true;btn.textContent="Zoeken…";try{let r=await fetch(proxy.replace(/\/+$/,"")+"/search?q="+encodeURIComponent(q));if(!r.ok)throw Error("HTTP "+r.status);let data=await r.json();let arr=data.results||[];if(!arr.length){$("searchResults").textContent="Geen haltes gevonden. Je kunt de timingpoint-code ook handmatig invullen.";return}arr.slice(0,12).forEach(s=>{let b=document.createElement("button");b.className="result";b.innerHTML=`<strong>${esc(s.name||s.code)}</strong><span>${esc(s.town||"")} · code ${esc(s.code)}</span>`;b.onclick=()=>{$("code").value=s.code;if(s.name)$("stopName").value=s.name;takeForm();persist();$("searchResults").innerHTML="";renderList();$("displayName").textContent=cur().stopName};$("searchResults").append(b)})}catch(e){$("searchResults").textContent="Haltes zoeken lukt niet: "+e.message+". Controleer of de Worker live staat."}finally{btn.disabled=false;btn.textContent="Zoek"}}
+$("searchBtn").onclick=searchStops;
+$("save").onclick=()=>{takeForm();persist();renderList();$("statusPill").textContent="Opgeslagen";if(timer)clearInterval(timer);if(Number(cur().refresh)>0)timer=setInterval(()=>getLive(cur()),Number(cur().refresh)*1000)};
+$("test").onclick=()=>{takeForm();persist();getLive(cur())};
+$("newBoard").onclick=()=>{takeForm();let b=defaultBoard();b.name="Nieuw bord "+(boards.length+1);b.stopName="Nieuwe halte";boards.push(b);selected=b.id;persist();loadForm()};
+$("deleteBoard").onclick=()=>{if(boards.length===1){alert("Er moet minimaal één bord blijven bestaan.");return}boards=boards.filter(b=>b.id!==selected);selected=boards[0].id;persist();loadForm()};
+$("export").onclick=()=>{takeForm();persist();let blob=new Blob([JSON.stringify({boards,proxy},null,2)],{type:"application/json"});let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="rnet-ov-bord-backup.json";a.click();URL.revokeObjectURL(a.href)};
+$("share").onclick=()=>{takeForm();persist();let b={...cur(),proxy};let encoded=btoa(unescape(encodeURIComponent(JSON.stringify(b))));let url=location.href.split("#")[0]+"#view="+encoded;$("shareUrl").value=url};
+$("copyShare").onclick=async()=>{let val=$("shareUrl").value;if(!val){$("share").click();val=$("shareUrl").value}try{await navigator.clipboard.writeText(val);$("copyShare").textContent="Gekopieerd ✓";setTimeout(()=>$("copyShare").textContent="Kopieer link",1800)}catch{$("shareUrl").select();document.execCommand("copy")}};
+function initViewer(b){$("admin").classList.add("hide");$("viewer").style.display="block";$("export").classList.add("hide");$("viewHeading").textContent=b.stopName||b.name||"Vertrektijden";let board=$("publicBoard");board.className="board"+(b.style==="dark"?" dark":b.style==="light"?" light":"");board.style.setProperty("--board-red",b.red||"#d71920");board.innerHTML=`<div class="boardhead"><div><div class="eyebrow">Vertrektijden</div><h2>${esc(b.stopName||b.name)}</h2></div><div class="badge">R·NET</div></div><div class="boardmeta"><span>Haltecode ${esc(b.code||"niet ingesteld")}</span><span class="pub-meta-right">Laden…</span></div><div class="pub-departures"><div class="empty">Vertrektijden laden…</div></div><div class="board-status pub-message">Live gegevens laden…</div>`;if(b.background)board.querySelector(".pub-departures").style.background=b.background;getLive(b,true);if(Number(b.refresh)>0)setInterval(()=>getLive(b,true),Math.max(30,Number(b.refresh))*1000)}
+let hash=location.hash;if(hash.startsWith("#view=")){try{let b=JSON.parse(decodeURIComponent(escape(atob(hash.slice(6)))));initViewer(b)}catch{loadForm()}}else{loadForm();if(Number(cur().refresh)>0)timer=setInterval(()=>getLive(cur()),Number(cur().refresh)*1000)}
+</script>
+</body></html>
